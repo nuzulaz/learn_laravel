@@ -15,7 +15,7 @@ class StudentsController extends Controller
     public function index()
     {
         $student = Student::All(); 
-        return view('student/index', compact('student'));
+        return view('students/index', compact('student'));
     }
 
     /**
@@ -26,6 +26,8 @@ class StudentsController extends Controller
     public function create()
     {
         //
+        return view('students/create');  
+
     }
 
     /**
@@ -36,7 +38,33 @@ class StudentsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+     
+        // $student = new Student;
+        // $student->nama = $request->nama;    
+        // $student->nim = $request->nim;    
+        // $student->jurusan= $request->jurusan;    
+        // $student->email = $request->email;
+
+        // $student->save();
+
+        // Student::create([
+        //     'nama' => $request->nama,
+        //     'nim' => $request->nim,
+        //     'email' => $request->email,
+        //     'jurusan' => $request->jurusan
+        // ])
+
+        $request->validate([
+            'nama'=> 'required',
+            'nim'=> 'required',
+            'email'=> 'required',
+            'jurusan'=> 'required'
+        ]);
+
+        Student::create($request->all());
+
+        return redirect('/students')->with('status','Data Mahasiswa Berhasil Ditambah');
+
     }
 
     /**
@@ -48,6 +76,7 @@ class StudentsController extends Controller
     public function show(Student $student)
     {
         //
+        return view('students/show',compact('student'));
     }
 
     /**
@@ -59,7 +88,8 @@ class StudentsController extends Controller
     public function edit(Student $student)
     {
         //
-    }
+        return view('students/edit',compact('student'));
+    }   
 
     /**
      * Update the specified resource in storage.
@@ -70,7 +100,24 @@ class StudentsController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        //
+
+
+        $request->validate([
+            'nama'=> 'required',
+            'nim'=> 'required',
+            'email'=> 'required',
+            'jurusan'=> 'required'
+        ]);
+        
+        Student::where('id',$student->id)
+                ->update([
+                    'nama' => $request->nama,
+                    'nim' => $request->nim,
+                    'jurusan' => $request->jurusan,
+                    'email' => $request->email
+                ]);
+
+        return redirect('/students')->with('status','Data Mahasiswa Berhasil Diubah');
     }
 
     /**
@@ -82,5 +129,8 @@ class StudentsController extends Controller
     public function destroy(Student $student)
     {
         //
+        Student::destroy($student->id);
+        return redirect('/students')->with('status','Data Mahasiswa Berhasil Dihapus');
+        
     }
 }
